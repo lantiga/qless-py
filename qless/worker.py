@@ -26,9 +26,10 @@ class Worker(object):
     def __init__(self, queues, host='localhost', workers=None, interval=60, workdir='.', resume=False, **kwargs):
         _host, s, _port = host.partition(':')
         _port           = int(_port or 6379)
+        _password       = kwargs.get('password')
         self.host       = _host
         self.port       = _port
-        self.client     = qless.client(self.host, self.port)
+        self.client     = qless.client(self.host, self.port, password=_password)
         self.count      = workers or psutil.NUM_CPUS
         self.interval   = interval
         self.queues     = queues
