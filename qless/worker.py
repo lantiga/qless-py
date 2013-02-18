@@ -29,7 +29,8 @@ class Worker(object):
         _password       = kwargs.get('password')
         self.host       = _host
         self.port       = _port
-        self.client     = qless.client(self.host, self.port, password=_password)
+        self.password   = _password
+        self.client     = qless.client(self.host, self.port, password=self.password)
         self.count      = workers or psutil.NUM_CPUS
         self.interval   = interval
         self.queues     = queues
@@ -137,7 +138,7 @@ class Worker(object):
     
     def work(self):
         # We should probably open up our own redis client
-        self.client = qless.client(self.host, self.port)
+        self.client = qless.client(self.host, self.port, password=self.password)
         self.queues = [self.client.queues[q] for q in self.queues]
         
         if not os.path.isdir(self.sandbox):
