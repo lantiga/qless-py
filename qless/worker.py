@@ -58,6 +58,7 @@ class Worker(object):
         else:
             jids_to_resume = []
         
+        pids = []
         for i in range(self.count):
             slot = {
                 'worker_id': i,
@@ -67,6 +68,7 @@ class Worker(object):
             if cpid:
                 logger.info('Spawned worker %i' % cpid)
                 self.sandboxes[cpid] = slot
+                pids.append(str(cpid))
             else:
                 # Set the value of the metadata so that jobs can detect
                 # what worker they're running on
@@ -84,6 +86,12 @@ class Worker(object):
                 self.jids      = jids_to_resume[start:end]
                 return self.work()
         
+        f=open(os.path.join(self.workdir, 'workers-pid.txt'),'w')
+        for pid in pids:
+            f.write(pid)
+            f.write('\n')
+        f.close()
+
         while self.master:
             try:
                 pid, status = os.wait()
