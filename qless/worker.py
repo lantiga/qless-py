@@ -87,6 +87,8 @@ class Worker(object):
                 return self.work()
         
         f=open(os.path.join(self.workdir, 'workers-pid.txt'),'w')
+        f.write(str(os.getpid()))
+        f.write('\n')
         for pid in pids:
             f.write(pid)
             f.write('\n')
